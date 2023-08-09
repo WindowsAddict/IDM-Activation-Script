@@ -2,8 +2,6 @@
 
 An open source tool to activate and reset trial of [Internet Download Manager](https://www.internetdownloadmanager.com/)
 
-------------------------------------------------------------------------
-
 ## Features
 
 -   IDM activation with registry key lock method
@@ -12,14 +10,10 @@ An open source tool to activate and reset trial of [Internet Download Manager](h
 -   Fully open source
 -   Based on transparent batch script
 
-------------------------------------------------------------------------
-
 ## IAS Latest Release
 
 Last Release - v0.8 (10-Aug-2023)\
 [GitHub](https://github.com/WindowsAddict/IDM-Activation-Script)
-
-------------------------------------------------------------------------
 
 ## Download / How to use it?
 
@@ -43,8 +37,6 @@ Last Release - v0.8 (10-Aug-2023)\
 -   In the extracted folder, run the file named `IAS.cmd`
 -   You will see the activation options, and follow onscreen instructions.
 -   That's all.
-
-------------------------------------------------------------------------
 
 ## Info
 
@@ -72,13 +64,9 @@ Last Release - v0.8 (10-Aug-2023)\
 -   For reset in unattended mode, run the script with `/res` parameter.
 -   To enable silent mode with above two methods, run the script with `/s` parameter.
 
-------------------------------------------------------------------------
-
 ## How does it work?
 
 -   IDM stores the data related to trial and activation in across various registry keys. Some of these keys are locked to protect them from tampering and data is stored in a pattern to track the fake serial issue and the remaining trial days. To activate it, script here simply generate those registry keys by triggering a few downloads in IDM and identifies those registry keys and locks them so IDM can't edit and view. That way IDM can not show the warning that it's activated with a fake serial key.
-
-------------------------------------------------------------------------
 
 ## Troubleshoot
 
@@ -86,8 +74,6 @@ Last Release - v0.8 (10-Aug-2023)\
 -   Reach out to us on [Discord](https://discord.gg/gjJEfq7ux8) (signup not required) with an error screenshot.
 
 [![](https://lookimg.com/images/2023/03/21/QTvjcD.png)](https://discord.gg/gjJEfq7ux8)
-
-------------------------------------------------------------------------
 
 ## Changelog
 
@@ -97,15 +83,11 @@ v0.8
 -   Minor bug fixes
 -   Add an info to inform users that empty registry keys are being deleted when script deletes a lot of them
 
-------------------------------------------------------------------------
-
 ## Screenshots
 
 ![](https://github.com/massgravel/mas-docs/blob/main/IAS.png?raw=true)
 
 ![](https://github.com/massgravel/mas-docs/blob/main/IAS_Activation.png?raw=true)
-
-------------------------------------------------------------------------
 
 ## Credits
 
