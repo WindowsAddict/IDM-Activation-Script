@@ -15,11 +15,6 @@
 ::============================================================================
 
 
-
-
-:: Add custom name in IDM license info, prefer to write it in English and/or numeric in below line after = sign,
-set name=
-
 : Parameters_info
 
 :: For activation in unattended mode, run the script with /act parameter.
@@ -427,7 +422,10 @@ echo:
 echo Applying registration details...
 echo:
 
-If not defined name set name=Tonec FZE
+:: Add custom name in IDM license info, prefer to write it in English and/or numeric in below line after = sign,
+call :_color2 %_Green% "- Set a name for the license:"
+set /p "name=> "
+If not defined name set "name=%username%"
 
 set "reg=HKCU\SOFTWARE\DownloadManager /v FName /t REG_SZ /d "%name%"" & call :_rcont
 set "reg=HKCU\SOFTWARE\DownloadManager /v LName /t REG_SZ /d """ & call :_rcont
