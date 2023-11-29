@@ -294,7 +294,7 @@ goto done2
 ::  Check user account SID
 
 set _sid=
-for /f "delims=" %%a in ('%psc% "$explorerProc = Get-Process -Name explorer | Where-Object {$_.SessionId -eq (Get-Process -Id $pid).SessionId} | Select-Object -First 1;$explorerOwner = (gwmi -Query ('Select * From Win32_Process Where ProcessID=' + $($explorerProc.Id))).GetOwner().User;$strSID = (New-Object System.Security.Principal.NTAccount($explorerOwner)).Translate([System.Security.Principal.SecurityIdentifier]).Value;$strSID" %nul6%') do (set _sid=%%a)
+for /f "delims=" %%a in ('%psc% "$explorerProc = Get-Process -Name explorer | Where-Object {$_.SessionId -eq (Get-Process -Id $pid).SessionId} | Select-Object -First 1; $sid = (gwmi -Query ('Select * From Win32_Process Where ProcessID=' + $explorerProc.Id)).GetOwnerSid().Sid; $sid" %nul6%') do (set _sid=%%a)
 
 reg query HKU\%_sid%\Software\Classes %nul% || (
 %eline%
@@ -667,8 +667,7 @@ exit /b
 $finalValues = @()
 
 $explorerProc = Get-Process -Name explorer | Where-Object {$_.SessionId -eq (Get-Process -Id $pid).SessionId} | Select-Object -First 1
-$explorerOwner = (gwmi -Query "Select * From Win32_Process Where ProcessID='$($explorerProc.Id)'").GetOwner().User
-$sid = (New-Object System.Security.Principal.NTAccount($explorerOwner)).Translate([System.Security.Principal.SecurityIdentifier]).Value
+$sid = (gwmi -Query "Select * From Win32_Process Where ProcessID='$($explorerProc.Id)'").GetOwnerSid().Sid
 
 $arch = (Get-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment').PROCESSOR_ARCHITECTURE
 if ($arch -eq "x86") {
