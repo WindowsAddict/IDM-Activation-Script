@@ -404,7 +404,7 @@ mode 153, 35
 ) else (
 mode 113, 35
 )
-%psc% "&%_buf%" %nul%
+if not defined WT_SESSION %psc% "&%_buf%" %nul%
 
 echo:
 %idmcheck% && taskkill /f /im idman.exe
@@ -494,7 +494,7 @@ mode 153, 35
 ) else (
 mode 113, 35
 )
-%psc% "&%_buf%" %nul%
+if not defined WT_SESSION %psc% "&%_buf%" %nul%
 
 echo:
 if not exist "%IDMan%" (
