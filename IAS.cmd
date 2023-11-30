@@ -1,4 +1,4 @@
-@set iasver=0.9
+@set iasver=1.0
 @setlocal DisableDelayedExpansion
 @echo off
 
@@ -232,6 +232,23 @@ exit /b
 
 ::========================================================================================================================================
 
+::  This code checks if script is running in terminal app and if yes then relaunches it with conhost.exe
+
+if %_unattended%==1 set wtrel=1
+for %%# in (%_args%) do (if /i "%%#"=="-wt" set wtrel=1)
+
+set terminal=
+if %winbuild% GEQ 17763 (
+if not "%WT_SESSION%%WT_PROFILE_ID%%SESSIONNAME%"=="" set terminal=1
+)
+
+if %winbuild% GEQ 17763 if defined terminal if not defined wtrel (
+start conhost.exe -ForceNoHandoff -- "!_batf!" %_args% -wt
+exit /b
+)
+
+::========================================================================================================================================
+
 ::  Check for updates
 
 set -=
@@ -318,7 +335,7 @@ reg add HKCU\IAS_TEST %nul%
 reg query HKU\%_sid%\IAS_TEST %nul% && (
 set HKCUsync=1
 )
-::set HKCUsync=$null
+
 reg delete HKCU\IAS_TEST /f %nul%
 reg delete HKU\%_sid%\IAS_TEST /f %nul%
 
@@ -364,7 +381,7 @@ if %_activate%==1 goto :_activate
 
 cls
 title  IDM Activation Script %iasver%
-mode 75, 28
+if not defined terminal mode 75, 28
 
 echo:
 echo:
@@ -400,11 +417,11 @@ goto :MainMenu
 
 cls
 if not %HKCUsync%==1 (
-mode 153, 35
+if not defined terminal mode 153, 35
 ) else (
-mode 113, 35
+if not defined terminal mode 113, 35
 )
-if not defined WT_SESSION %psc% "&%_buf%" %nul%
+if not defined terminal %psc% "&%_buf%" %nul%
 
 echo:
 %idmcheck% && taskkill /f /im idman.exe
@@ -490,11 +507,11 @@ exit /b
 
 cls
 if not %HKCUsync%==1 (
-mode 153, 35
+if not defined terminal mode 153, 35
 ) else (
-mode 113, 35
+if not defined terminal mode 113, 35
 )
-if not defined WT_SESSION %psc% "&%_buf%" %nul%
+if not defined terminal %psc% "&%_buf%" %nul%
 
 echo:
 if not exist "%IDMan%" (
@@ -564,16 +581,26 @@ echo:
 echo:
 if %_unattended%==1 timeout /t 2 & exit /b
 
+if defined terminal (
+call :_color %_Yellow% "Press 0 key to return..."
+choice /c 0 /n
+) else (
 call :_color %_Yellow% "Press any key to return..."
 pause %nul1%
+)
 goto MainMenu
 
 :done2
 
 if %_unattended%==1 timeout /t 2 & exit /b
 
+if defined terminal (
+echo Press 0 key to exit...
+choice /c 0 /n
+) else (
 echo Press any key to exit...
 pause %nul1%
+)
 exit /b
 
 ::========================================================================================================================================
