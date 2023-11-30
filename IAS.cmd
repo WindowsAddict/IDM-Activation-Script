@@ -247,6 +247,8 @@ start conhost.exe -ForceNoHandoff -- "!_batf!" %_args% -wt
 exit /b
 )
 
+for %%# in (%_args%) do (if /i "%%#"=="-wt" set terminal=)
+
 ::========================================================================================================================================
 
 ::  Check for updates
