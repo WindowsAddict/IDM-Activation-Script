@@ -239,7 +239,11 @@ for %%# in (%_args%) do (if /i "%%#"=="-wt" set wtrel=1)
 
 set terminal=
 if %winbuild% GEQ 17763 (
-if not "%WT_SESSION%%WT_PROFILE_ID%%SESSIONNAME%"=="" set terminal=1
+if not "%WT_SESSION%%WT_PROFILE_ID%"=="" set terminal=1
+)
+
+if not defined terminal (
+reg query HKCU\Console\%%%%Startup /v DelegationConsole %nul2% | find /i "2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69" %nul1% && set terminal=1
 )
 
 if %winbuild% GEQ 17763 if defined terminal if not defined wtrel (
