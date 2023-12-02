@@ -237,21 +237,23 @@ exit /b
 if %_unattended%==1 set wtrel=1
 for %%# in (%_args%) do (if /i "%%#"=="-wt" set wtrel=1)
 
+if %winbuild% GEQ 17763 (
 set terminal=1
 
-if %winbuild% GEQ 17763 if not defined wtrel (
+if not defined wtrel (
 set test=TermTest-%random%
 title !test!
 %psc% "(Get-Process | Where-Object { $_.MainWindowTitle -like '*!test!*' }).ProcessName"  | find /i "cmd" %nul1% && (set terminal=)
 title %comspec%
 )
 
-if %winbuild% GEQ 17763 if defined terminal if not defined wtrel (
+if defined terminal if not defined wtrel (
 start conhost.exe "!_batf!" %_args% -wt
 exit /b
 )
 
 for %%# in (%_args%) do (if /i "%%#"=="-wt" set terminal=)
+)
 
 ::========================================================================================================================================
 
