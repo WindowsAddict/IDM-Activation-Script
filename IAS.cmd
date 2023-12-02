@@ -237,17 +237,18 @@ exit /b
 if %_unattended%==1 set wtrel=1
 for %%# in (%_args%) do (if /i "%%#"=="-wt" set wtrel=1)
 
-set terminal=
-if %winbuild% GEQ 17763 (
-if not "%WT_SESSION%%WT_PROFILE_ID%"=="" set terminal=1
-)
+set terminal=1
 
-if not defined terminal (
-reg query HKCU\Console\%%%%Startup /v DelegationConsole %nul2% | find /i "2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69" %nul1% && set terminal=1
+if %winbuild% GEQ 17763 if not defined wtrel (
+set test=TermTest-%random%
+title !test!
+%psc% "(Get-Process | Where-Object { $_.MainWindowTitle -like '*!test!*' }).ProcessName"  | find /i "cmd" %nul1% && (set terminal=)
+title %comspec%
 )
 
 if %winbuild% GEQ 17763 if defined terminal if not defined wtrel (
-start conhost.exe -ForceNoHandoff -- "!_batf!" %_args% -wt
+pause
+start conhost.exe "!_batf!" %_args% -wt
 exit /b
 )
 
