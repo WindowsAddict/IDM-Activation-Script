@@ -247,7 +247,6 @@ title %comspec%
 )
 
 if %winbuild% GEQ 17763 if defined terminal if not defined wtrel (
-pause
 start conhost.exe "!_batf!" %_args% -wt
 exit /b
 )
