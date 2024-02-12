@@ -1,4 +1,4 @@
-@set iasver=1.1
+@set iasver=1.2
 @setlocal DisableDelayedExpansion
 @echo off
 
@@ -16,6 +16,9 @@
 ::============================================================================
 
 
+
+::  To activate, run the script with "/act" parameter or change 0 to 1 in below line
+set _activate=0
 
 ::  To Freeze the 30 days trial period, run the script with "/frz" parameter or change 0 to 1 in below line
 set _freeze=0
@@ -107,10 +110,11 @@ for %%A in (%_args%) do (
 if /i "%%A"=="-el"  set _elev=1
 if /i "%%A"=="/res" set _reset=1
 if /i "%%A"=="/frz" set _freeze=1
+if /i "%%A"=="/act" set _activate=1
 )
 )
 
-for %%A in (%_freeze% %_reset%) do (if "%%A"=="1" set _unattended=1)
+for %%A in (%_activate% %_freeze% %_reset%) do (if "%%A"=="1" set _unattended=1)
 
 ::========================================================================================================================================
 
@@ -359,6 +363,11 @@ set "HKLM=HKLM\SOFTWARE\Wow6432Node\Internet Download Manager"
 
 for /f "tokens=2*" %%a in ('reg query "HKU\%_sid%\Software\DownloadManager" /v ExePath %nul6%') do call set "IDMan=%%b"
 
+if not exist "%IDMan%" (
+if %arch%==x64 set "IDMan=%ProgramFiles(x86)%\Internet Download Manager\IDMan.exe"
+if %arch%==x86 set "IDMan=%ProgramFiles%\Internet Download Manager\IDMan.exe"
+)
+
 if not exist %SystemRoot%\Temp md %SystemRoot%\Temp
 set "idmcheck=tasklist /fi "imagename eq idman.exe" | findstr /i "idman.exe" %nul1%"
 
@@ -378,7 +387,8 @@ goto done2
 ::========================================================================================================================================
 
 if %_reset%==1 goto :_reset
-if %_freeze%==1 goto :_freezetrial
+if %_activate%==1 (set frz=0&goto :_activate)
+if %_freeze%==1 (set frz=1&goto :_activate)
 
 :MainMenu
 
@@ -394,8 +404,8 @@ echo:
 echo:
 echo:            ___________________________________________________ 
 echo:                                                               
-echo:               [1] Freeze Trial
-echo:               [2] Activate
+echo:               [1] Activate
+echo:               [2] Freeze Trial
 echo:               [3] Reset Activation / Trial
 echo:               _____________________________________________   
 echo:                                                               
@@ -412,23 +422,9 @@ if %_erl%==6 exit /b
 if %_erl%==5 start https://github.com/WindowsAddict/IDM-Activation-Script & start https://massgrave.dev/idm-activation-script & goto MainMenu
 if %_erl%==4 start https://www.internetdownloadmanager.com/download.html & goto MainMenu
 if %_erl%==3 goto _reset
-if %_erl%==2 goto _activate
-if %_erl%==1 goto _freezetrial
+if %_erl%==2 (set frz=1&goto :_activate)
+if %_erl%==1 (set frz=0&goto :_activate)
 goto :MainMenu
-
-::========================================================================================================================================
-
-:_activate
-
-cls
-if not defined terminal mode 100, 35
-
-echo:
-echo %line%
-%eline%
-echo Activation option is currently not working,
-echo Use Freeze Trial option for now.
-goto done
 
 ::========================================================================================================================================
 
@@ -463,7 +459,6 @@ echo:
 echo %line%
 echo:
 call :_color %Green% "The IDM reset process has been completed."
-echo Help: %mas%idm-activation-script.html#Troubleshoot
 
 goto done
 
@@ -522,7 +517,7 @@ exit /b
 
 ::========================================================================================================================================
 
-:_freezetrial
+:_activate
 
 cls
 if not %HKCUsync%==1 (
@@ -531,6 +526,20 @@ if not defined terminal mode 153, 35
 if not defined terminal mode 113, 35
 )
 if not defined terminal %psc% "&%_buf%" %nul%
+
+if %frz%==0 if %_unattended%==0 (
+echo:
+echo %line%
+echo:
+echo      Activation is not working for some users and IDM may show fake serial nag screen.
+echo:
+call :_color2 %_White% "     " %_Green% "Its recommended to use Freeze Trial option instead."
+echo %line%
+echo:
+choice /C:19 /N /M ">    [1] Go Back [9] Activate : "
+if !errorlevel!==1 goto :MainMenu
+cls
+)
 
 echo:
 if not exist "%IDMan%" (
@@ -574,14 +583,11 @@ if not %HKCUsync%==1 reg export %CLSID2% "%SystemRoot%\Temp\_Backup_HKU-%_sid%_C
 call :delete_queue
 call :add_key
 
-echo %IDMver% | find /i "Full" %nul1% && (
-%psc% "$sid = '%_sid%'; $HKCUsync = %HKCUsync%; $lockKey = $null; $deleteKey = 1; $f=[io.file]::ReadAllText('!_batp!') -split ':regscan\:.*';iex ($f[1])"
-) || (
 %psc% "$sid = '%_sid%'; $HKCUsync = %HKCUsync%; $lockKey = 1; $deleteKey = $null; $toggle = 1; $f=[io.file]::ReadAllText('!_batp!') -split ':regscan\:.*';iex ($f[1])"
-)
+
+if %frz%==0 call :register_IDM
 
 call :download_files
-
 if not defined _fileexist (
 %eline%
 echo Error: Unable to download files with IDM.
@@ -595,8 +601,15 @@ goto :done
 echo:
 echo %line%
 echo:
+if %frz%==0 (
+call :_color %Green% "The IDM Activation process has been completed."
+echo:
+call :_color %Gray% "If the fake serial screen appears, use the Freeze Trial option instead."
+) else (
 call :_color %Green% "The IDM 30 days trial period is successfully freezed for Lifetime."
-echo Help: %mas%idm-activation-script.html#Troubleshoot
+echo:
+call :_color %Gray% "If IDM is showing a popup to register, reinstall IDM."
+)
 
 ::========================================================================================================================================
 
@@ -630,6 +643,37 @@ pause %nul1%
 exit /b
 
 ::========================================================================================================================================
+
+:_rcont
+
+reg add %reg% %nul%
+call :add
+exit /b
+
+:register_IDM
+
+echo:
+echo Applying registration details...
+echo:
+
+set /a fname = %random% %% 9999 + 1000
+set /a lname = %random% %% 9999 + 1000
+set email=%fname%.%lname%@tonec.com
+
+for /f "delims=" %%a in ('%psc% "$key = -join ((Get-Random -Count  20 -InputObject ([char[]]('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'))));$key = ($key.Substring(0,  5) + '-' + $key.Substring(5,  5) + '-' + $key.Substring(10,  5) + '-' + $key.Substring(15,  5) + $key.Substring(20));Write-Output $key" %nul6%') do (set key=%%a)
+
+set "reg=HKCU\SOFTWARE\DownloadManager /v FName /t REG_SZ /d "%fname%"" & call :_rcont
+set "reg=HKCU\SOFTWARE\DownloadManager /v LName /t REG_SZ /d "%lname%"" & call :_rcont
+set "reg=HKCU\SOFTWARE\DownloadManager /v Email /t REG_SZ /d "%email%"" & call :_rcont
+set "reg=HKCU\SOFTWARE\DownloadManager /v Serial /t REG_SZ /d "%key%"" & call :_rcont
+
+if not %HKCUsync%==1 (
+set "reg=HKU\%_sid%\SOFTWARE\DownloadManager /v FName /t REG_SZ /d "%fname%"" & call :_rcont
+set "reg=HKU\%_sid%\SOFTWARE\DownloadManager /v LName /t REG_SZ /d "%lname%"" & call :_rcont
+set "reg=HKU\%_sid%\SOFTWARE\DownloadManager /v Email /t REG_SZ /d "%email%"" & call :_rcont
+set "reg=HKU\%_sid%\SOFTWARE\DownloadManager /v Serial /t REG_SZ /d "%key%"" & call :_rcont
+)
+exit /b
 
 :download_files
 
