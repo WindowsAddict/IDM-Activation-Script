@@ -82,9 +82,7 @@ Last Release - v1.2 (12-Feb-2024)\
 ## Troubleshoot
 
 -   Browser Integration Fix: [Chrome](https://www.internetdownloadmanager.com/register/new_faq/bi9.html) - [Firefox](https://www.internetdownloadmanager.com/register/new_faq/bi4.html)
--   Reach out to us on [Discord](https://discord.gg/gjJEfq7ux8) (signup not required) with an error screenshot.
-
-[![](https://lookimg.com/images/2023/03/21/QTvjcD.png)](https://discord.gg/gjJEfq7ux8)
+-   Raise the issue on [Github](https://github.com/WindowsAddict/IDM-Activation-Script) with screenshots.
 
 ## Changelog
 
