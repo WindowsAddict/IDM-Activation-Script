@@ -404,8 +404,8 @@ echo:
 echo:
 echo:            ___________________________________________________ 
 echo:                                                               
-echo:               [1] Activate
-echo:               [2] Freeze Trial
+echo:               [1] Freeze Trial
+echo:               [2] Activate ^(Not working^)
 echo:               [3] Reset Activation / Trial
 echo:               _____________________________________________   
 echo:                                                               
@@ -422,8 +422,8 @@ if %_erl%==6 exit /b
 if %_erl%==5 start https://github.com/WindowsAddict/IDM-Activation-Script & start https://massgrave.dev/idm-activation-script & goto MainMenu
 if %_erl%==4 start https://www.internetdownloadmanager.com/download.html & goto MainMenu
 if %_erl%==3 goto _reset
-if %_erl%==2 (set frz=1&goto :_activate)
-if %_erl%==1 (set frz=0&goto :_activate)
+if %_erl%==2 (set frz=0&goto :_activate)
+if %_erl%==1 (set frz=1&goto :_activate)
 goto :MainMenu
 
 ::========================================================================================================================================
