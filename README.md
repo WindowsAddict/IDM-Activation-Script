@@ -24,7 +24,7 @@ Last Release - v1.2 (12-Feb-2024)\
 
 -   📌 The activation option is currently not working in the script, use the Freeze trial option to lock 30-day trial period for the lifetime.
 
-### Method 1 - PowerShell
+### Method 1 - PowerShell v5+
 
 (Recommended)
 
