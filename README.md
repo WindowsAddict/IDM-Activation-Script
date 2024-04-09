@@ -2,7 +2,7 @@
 
 ## This project has been archived and is no longer being maintained.
 
-I've switched to [HTTP Downloader](https://rentry.co/HTTP_Downloader), don't want to keep up with IDM new nags anymore.
+I've switched to FDM, don't want to keep up with IDM new nags anymore.
 
 ------------------------------------------------------------------------
 
