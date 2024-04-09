@@ -1,4 +1,12 @@
-# IDM Activation Script
+# Notice:
+
+## This project has been archived and is no longer being maintained.
+
+I've switched to [HTTP Downloader](https://rentry.co/HTTP_Downloader), don't want to keep up with IDM new nags anymore.
+
+------------------------------------------------------------------------
+
+## IDM Activation Script
 
 An open-source tool to activate and reset the trial of [Internet Download Manager](https://www.internetdownloadmanager.com/)
 
@@ -128,7 +136,7 @@ Last Release - v1.2 (12-Feb-2024)\
 ## Credits
 
 |                                             |                                                                                                                                                                                                                                        |
-|-------------------|-----------------------------------------------------|
+|----------------------|--------------------------------------------------|
 | Dukun Cabul                                 | Original researcher of this IDM trial reset and activation logic, made an Autoit tool for these methods, [IDM-AIO_2020_Final](https://nsaneforums.com/topic/371047-discussion-internet-download-manager-fixes/page/8/#comment-1632062) |
 | AveYo aka BAU                               | [reg_own lean and mean snippet](https://pastebin.com/XTPt0JSC)                                                                                                                                                                         |
 | [abbodi1406](https://github.com/abbodi1406) | Help in coding                                                                                                                                                                                                                         |

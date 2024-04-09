@@ -401,11 +401,11 @@ echo:
 echo:
 echo:
 echo:
-echo:
+echo:                This script is NOT working with latest IDM.     
 echo:            ___________________________________________________ 
 echo:                                                               
 echo:               [1] Freeze Trial
-echo:               [2] Activate ^(Not working^)
+echo:               [2] Activate
 echo:               [3] Reset Activation / Trial
 echo:               _____________________________________________   
 echo:                                                               
